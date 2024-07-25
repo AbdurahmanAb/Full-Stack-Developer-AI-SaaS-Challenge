@@ -9,7 +9,7 @@ export default function DashboardLayout({
   return (
     <ClerkLoaded>
         <Header />
-      <div>{children}</div>
+      <div className="mt-10">{children}</div>
     </ClerkLoaded>
   );
 }

@@ -5,7 +5,7 @@ import { FileIcon, FilePlusIcon, FileUpIcon } from "lucide-react";
 
 export default function Header() {
   return (
-    <div className="p-5">
+    <div className="p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <Link href={'/dashboard'}>
           <h1 className="text-xl font-semibold">
@@ -16,18 +16,18 @@ export default function Header() {
 
         <div className="flex items-center gap-2">
         
-        <SignedIn >
-        <Button asChild variant="link">
+        {/* <SignedIn >
+        <Button asChild variant="link" className="max-sm:hidden">
                 <Link href={'/dashboard'}>Pricing</Link>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="sm">
                 <Link href={'/dashboard'}>My Documents</Link>
             </Button>
-            <Button asChild variant="outline" size={"lg"}>
+            <Button asChild variant="outline" className="" size={"sm"}>
                 <Link href={'/dashboard'}><FilePlusIcon color="blue" /> </Link>
             </Button>
         <UserButton />
-        </SignedIn>
+        </SignedIn> */}
          
         </div>
       </div>
