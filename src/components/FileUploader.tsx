@@ -1,14 +1,36 @@
 "use client";
+import useUpload from "@/hooks/useUpload";
 import { CircleArrowDown, RocketIcon } from "lucide-react";
-import React, { useCallback } from "react";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
 const FileUploader = () => {
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const { fileState, handleUpload } = useUpload();
+  const { progress, status, error, fileId } = fileState;
+  const router = useRouter();
+
+  useEffect(()=>{
+    if(fileId){
+      router.push(`/files/${fileId}`);
+    }
+  },[fileId,router])
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     // Do something with the files
-    console.log(acceptedFiles);
+    const file = acceptedFiles[0];
+    if (file) {
+      await handleUpload(file);
+      console.log(file);
+    } else {
+    }
   }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+    accept: {
+      "aaplication/pdf": [".pdf"],
+    },
+  });
   return (
     <div className="flex-1  flex items-center justify-center max-w-7xl w-[90%]">
       <div
@@ -20,13 +42,15 @@ const FileUploader = () => {
         <input {...getInputProps()} />
         {isDragActive ? (
           <>
-<RocketIcon className="animate-ping h-20 w-20" />
+            <RocketIcon className="animate-ping h-20 w-20" />
             <p>Drop the files here ...</p>
           </>
         ) : (
           <>
-                    <CircleArrowDown className="animate-bounce h-20 w-20" />
-            <p className="text-center">Drag and drop some files here, or click to select files</p>
+            <CircleArrowDown className="animate-bounce h-20 w-20" />
+            <p className="text-center">
+              Drag and drop some files here, or click to select files
+            </p>
           </>
         )}
       </div>
