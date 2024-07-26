@@ -40,6 +40,6 @@ export async function generateEmbedingsInPineconevectorStore(docId: string) {
     });
     return pineconeVecorStore;
   }else{
-    const splitDocs = await generateDocs(docId)
+   // const splitDocs = await generateDocs(docId)
   }
 }

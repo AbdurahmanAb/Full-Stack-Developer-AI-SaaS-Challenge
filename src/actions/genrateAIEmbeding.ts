@@ -8,10 +8,9 @@ export async function genrateAIEmbeding(docId:string) {
     auth().protect(); // Protect this route with authentication
 
     //turn pdf to embedings
-   await generateEmbedingsInPinconevectorStore(docId);
+  // await generateEmbedingsInPineconevectorStore(docId);
 
    revalidatePath(`/dashboard`);
 
    return {completed:true} }
 
-}
