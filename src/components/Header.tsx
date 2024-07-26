@@ -16,7 +16,7 @@ export default function Header() {
 
         <div className="flex items-center gap-2">
         
-        {/* <SignedIn >
+        <SignedIn >
         <Button asChild variant="link" className="max-sm:hidden">
                 <Link href={'/dashboard'}>Pricing</Link>
             </Button>
@@ -27,7 +27,7 @@ export default function Header() {
                 <Link href={'/dashboard'}><FilePlusIcon color="blue" /> </Link>
             </Button>
         <UserButton />
-        </SignedIn> */}
+        </SignedIn>
          
         </div>
       </div>

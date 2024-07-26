@@ -9,6 +9,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import {v4 as uuidv4 } from 'uuid';
+
 export enum StatusText {
   Uploading = "Uploading file....",
   Uploaded = "The file uploaded successfully",
@@ -17,8 +18,9 @@ export enum StatusText {
 }
 
 export type Status = StatusText[keyof StatusText];
+
 function useUpload() {
-  const [fileState, setFIleState] = useState<{
+  const [fileState, setFileState] = useState<{
     progress: number | null;
     fileId: string | null;
     status: Status | null;
@@ -30,9 +32,7 @@ function useUpload() {
     error: null,
   });
 
- 
   const { user } = useUser();
-
 
   const handleUpload = async (file: File) => {
     if (!file || !user) return;
@@ -43,40 +43,48 @@ function useUpload() {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const percent =
-          Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + percent + "% done");
-          
-        setFIleState({
-          ...fileState,
+        const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        console.log("Upload is " + percent + "% done");
+        
+        setFileState((prevState) => ({
+          ...prevState,
           progress: percent,
           status: StatusText.Uploading,
-        });
+        }));
       },
       (error) => {
-        setFIleState({ ...fileState, error: error.message });
+        setFileState((prevState) => ({ ...prevState, error: error.message }));
       },
       async () => {
-        setFIleState({ ...fileState, status: StatusText.Uploaded });
+        setFileState((prevState) => ({ ...prevState, status: StatusText.Uploaded }));
+        console.log("status ", fileState);
 
-        const donwloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-        setFIleState({ ...fileState, status: StatusText.Saving });
+        const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+        setFileState((prevState) => ({ ...prevState, status: StatusText.Saving }));
+        console.log("sec", fileState);
+
         await setDoc(doc(db, "users", user.id, "files", fileIdtoUpload), {
           name: file.name,
           size: file.size,
           type: file.type,
-          downloadlUrl: donwloadUrl,
+          downloadUrl: downloadUrl,
           ref: uploadTask.snapshot.ref.fullPath,
           createdAt: new Date().toISOString(),
         });
-  setFIleState({ ...fileState, status: StatusText.Generating, fileId: fileIdtoUpload });
-console.log("File uploaded successfully");
 
-    }
+        setFileState((prevState) => ({
+          ...prevState,
+          status: StatusText.Generating,
+          fileId: fileIdtoUpload,
+        }));
+        console.log("third", fileState);
+
+        console.log("File uploaded successfully");
+      }
     );
   };
 
-  return {fileState,handleUpload};
+  return { fileState, handleUpload };
 }
 
 export default useUpload;
